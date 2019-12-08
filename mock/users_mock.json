@@ -1,0 +1,16 @@
+{
+    "users": [
+        {
+            "userID": "1",
+            "fullName": "Сергей Лазарев",
+            "phone": "+79221319922",
+            "avatar": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgtO8-pIUozlE2AfqGl1EUFycvB416m2gu2YykqJk5zofZDjpvRg&s"
+        },
+        {
+            "userID": "2",
+            "fullName": "Иванова Ивана",
+            "phone": "+79992221133",
+            "avatar": ""
+        }
+    ]
+}
