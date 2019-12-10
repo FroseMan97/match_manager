@@ -1,16 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:match_manager/data/datasources/matches_local_datasource_impl.dart';
 import 'package:match_manager/data/datasources/users_local_datasource_impl.dart';
 import 'package:match_manager/data/models/match_model.dart';
 import 'package:match_manager/data/repositories/matches_repository_impl.dart';
 import 'package:match_manager/data/repositories/users_repository_impl.dart';
-import 'package:match_manager/styles.dart';
-import 'package:match_manager/presentation/blocs/match_bloc.dart';
-import 'package:match_manager/presentation/blocs/matches_bloc.dart';
+import 'package:match_manager/presentation/blocs/match/match_bloc.dart';
+import 'package:match_manager/presentation/blocs/matches/matches_bloc.dart';
+import 'package:match_manager/presentation/blocs/matches/matches_event.dart';
+import 'package:match_manager/presentation/blocs/matches/matches_state.dart';
 import 'package:match_manager/presentation/widgets/match_snippet.dart';
 import 'package:match_manager/utils/refresh_physics.dart';
 
+import '../../styles.dart';
+import 'add_match_screen.dart';
 import 'match_screen.dart';
 
 class MatchesScreen extends StatefulWidget {
@@ -33,83 +37,123 @@ class _MatchesScreenState extends State<MatchesScreen> {
   }
 
   @override
-  void dispose() {
-    matchesBloc.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final title = 'ецус'.toUpperCase();
     return Scaffold(
+      floatingActionButton: _buildFloatingActionButton(),
       drawer: widget.drawer,
       body: CustomScrollView(
         physics: RefreshScrollPhysics(),
         slivers: <Widget>[
-          SliverAppBar(
-            backgroundColor: CustomStyles.appBarColor,
-            title: Text(title),
-            floating: true,
-          ),
+          _buildAppbar(title),
           CupertinoSliverRefreshControl(
             refreshIndicatorExtent: 80,
             onRefresh: () async {
               await Future.delayed(Duration(seconds: 1));
-              matchesBloc.loadMatches();
+              matchesBloc.add(LoadMatchesEvent());
             },
           ),
-          StreamBuilder<bool>(
-            stream: matchesBloc.getMatchesLoading,
-            builder: (context, snapshot) {
-              return StreamBuilder<List<MatchModel>>(
-                stream: matchesBloc.getMatches,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final matches = snapshot.data;
-                    if (matches == null || matches.isEmpty) {
-                      return SliverFillRemaining(
-                        child: Center(
-                          child: Text('Нет матчей'),
-                        ),
-                      );
-                    }
-                    return SliverList(
-                      delegate: SliverChildBuilderDelegate((context, i) {
-                        final match = matches[i];
-                        return MatchSnippet(
-                            status: match.matchStatus,
-                            matchName: match?.matchName,
-                            matchDateTime: match?.matchDateTime,
-                            photo: match?.matchPhoto,
-                            onTap: () => Navigator.push(context, CupertinoPageRoute(builder: (context) {
-                                  final matchesDatasource =MatchesLocalDatasource();
-                                  final usersDatasource = UsersLocalDatasourceImpl();
-                                  return MatchScreen(
-                                    matchBloc: MatchBloc(
-                                      matchesRepository: MatchesRepositoryImpl(matchesDatasource), 
-                                      usersRepository: UsersRepositoryImpl(usersDatasource),
-                                      matchID: match.matchID
-                                    ),
-                                  );
-                                })));
-                      },
-                          addAutomaticKeepAlives: false,
-                          childCount: snapshot.data.length),
-                    );
-                  }
-                  if(snapshot.hasError){
-                    return SliverFillRemaining(
-                    child: Center(child: Text(snapshot.error)),
-                  );
-                  }
-                  return SliverFillRemaining(
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                },
-              );
+          BlocBuilder<MatchesBloc, MatchesState>(
+            bloc: matchesBloc,
+            builder: (context, state) {
+              if (state is LoadingMatchesState) {
+                return _buildLoadingWidget();
+              }
+              if (state is EmptyMatchesState) {
+                return _buildEmptyMatches();
+              }
+              if (state is ErrorMatchesState) {
+                return _buildErrorWidget(
+                  state.errorMessage,
+                );
+              }
+              if (state is LoadedMatchesState) {
+                return _buildMatchesList(
+                  state.matchesList,
+                );
+              }
             },
           )
         ],
+      ),
+    );
+  }
+
+  _buildFloatingActionButton() {
+    return FloatingActionButton(
+      backgroundColor: Colors.lightBlueAccent,
+      onPressed: () async => await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => AddMatchScreen()),
+      ),
+      child: Icon(
+        Icons.add,
+      ),
+    );
+  }
+
+  _buildAppbar(String title) {
+    return SliverAppBar(
+      backgroundColor: CustomStyles.appBarColor,
+      title: Text(title),
+      floating: true,
+    );
+  }
+
+  _buildErrorWidget(String errorMessage) {
+    return SliverFillRemaining(
+      child: Center(child: Text(errorMessage)),
+    );
+  }
+
+  _buildLoadingWidget() {
+    return SliverFillRemaining(
+      child: Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  _buildEmptyMatches() {
+    return SliverFillRemaining(
+      child: Center(
+        child: Text('Нет матчей'),
+      ),
+    );
+  }
+
+  _buildMatchesList(List<MatchModel> matchesList) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (context, i) {
+          final match = matchesList[i];
+          return MatchSnippet(
+            status: match.matchStatus,
+            matchName: match?.matchName,
+            matchDateTime: match?.matchDateTime,
+            photo: match?.matchPhoto,
+            onTap: () => Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) {
+                  final matchesDatasource = MatchesLocalDatasource();
+                  final usersDatasource = UsersLocalDatasourceImpl();
+                  return MatchScreen(
+                    matchBloc: MatchBloc(
+                      matchesRepository: MatchesRepositoryImpl(
+                        matchesDatasource,
+                      ),
+                      usersRepository: UsersRepositoryImpl(
+                        usersDatasource,
+                      ),
+                      matchID: match.matchID,
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        },
+        addAutomaticKeepAlives: false,
+        childCount: matchesList.length,
       ),
     );
   }

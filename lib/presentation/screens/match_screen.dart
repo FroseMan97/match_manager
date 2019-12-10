@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:match_manager/data/models/match_model.dart';
 import 'package:match_manager/data/models/match_status_model.dart';
 import 'package:match_manager/data/models/user_model.dart';
-import 'package:match_manager/presentation/blocs/match_bloc.dart';
+import 'package:match_manager/presentation/blocs/match/match_bloc.dart';
 import 'package:match_manager/presentation/widgets/badge.dart';
 import 'package:match_manager/presentation/widgets/custom_image.dart';
 import 'package:match_manager/utils/refresh_physics.dart';
@@ -22,6 +22,8 @@ class MatchScreen extends StatefulWidget {
 
 class _MatchScreenState extends State<MatchScreen> {
   MatchBloc matchBloc;
+
+  bool flag = false;
 
   @override
   void initState() {
@@ -49,6 +51,7 @@ class _MatchScreenState extends State<MatchScreen> {
           final matchCollectionDateTime = match?.matchColletionDateTime;
           final matchStatus = match?.matchStatus;
           return Scaffold(
+            persistentFooterButtons: <Widget>[_buildFloatingActionButton()],
             body: CustomScrollView(
               physics: RefreshScrollPhysics(),
               slivers: <Widget>[
@@ -76,6 +79,30 @@ class _MatchScreenState extends State<MatchScreen> {
             ),
           );
         });
+  }
+
+  Widget _buildFloatingActionButton() {
+    final onPressed = () => setState(() {
+          flag = !flag;
+        });
+    final button1 = RaisedButton(
+      splashColor: Colors.lightBlueAccent,
+      color: Colors.green[500],
+      textColor: Colors.white,
+      onPressed: onPressed,
+      child: Text('Заявиться на матч'),
+    );
+    final button2 = RaisedButton(
+      splashColor: Colors.lightBlueAccent,
+      color: Colors.red[500],
+      textColor: Colors.white,
+      onPressed: onPressed,
+      child: Text('Отозвать заявку'),
+    );
+    return Container(
+      width: MediaQuery.of(context).size.width - 20,
+      height: 50,
+        child: flag ? button1 : button2);
   }
 
   _buildLoading() {
