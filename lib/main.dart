@@ -9,20 +9,28 @@ import 'presentation/widgets/drawer.dart';
 
 void main() async {
   initializeDateFormatting("ru_RU").then((_) => runApp(MyApp()));
-} 
+}
 
 class MyApp extends StatelessWidget {
   final drawer = DrawerWidget();
   @override
   Widget build(BuildContext context) {
-    final MatchesLocalDatasource matchesLocalDatasource = MatchesLocalDatasource();
-    final MatchesRepository matchesRepository = MatchesRepositoryImpl(matchesLocalDatasource);
-    final MatchesBloc matchesBloc = MatchesBloc(matchesRepository: matchesRepository);
+    final MatchesLocalDatasource matchesLocalDatasource =
+        MatchesLocalDatasource();
+    final MatchesRepository matchesRepository =
+        MatchesRepositoryImpl(matchesLocalDatasource);
+    final MatchesBloc matchesBloc =
+        MatchesBloc(matchesRepository: matchesRepository);
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MatchesScreen(drawer: drawer, matchesBloc: matchesBloc),
+      home: Container(
+        color: Colors.lightBlueAccent,
+        child: SafeArea(
+            top: true,
+            child: MatchesScreen(drawer: drawer, matchesBloc: matchesBloc)),
+      ),
     );
   }
 }

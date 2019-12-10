@@ -3,7 +3,7 @@
         {
             "matchStatus": 0,
             "matchID": "1",
-            "matchName": "ЗЕНИТ - АНЖИ",
+            "matchName": "ЗЕНИТ - ЛОКОМОТИВ МОСКВА",
             "matchDateTime": "2019-04-14 16:30",
             "matchCollectionDateTime": "2019-04-14 18:30",
             "matchDescription": "Будет драка",
@@ -20,7 +20,7 @@
         {
             "matchStatus": 1,
             "matchID": "2",
-            "matchName": "ЗЕНИТ - РОСТОВ",
+            "matchName": "ЗЕНИТ - КРЫЛЬЯ СОВЕТОВ",
             "matchDateTime": "2019-06-16 18:30",
             "matchCollectionDateTime": "2019-04-14 18:30",
             "matchDescription": "ololo",

@@ -42,27 +42,41 @@ class MatchSnippet extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
-                        matchName,
-                        style: TextStyle(fontSize: 18, letterSpacing: 0.25),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(right: 8),
+                          child: Text(
+                            matchName,
+                            overflow: TextOverflow.visible,
+                            style: TextStyle(fontSize: 18, letterSpacing: 0.25),
+                          ),
+                        ),
                       ),
                       BadgeWidget(
                         matchStatus: status,
                       )
                     ],
                   ),
-                  SizedBox(height: 8,),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Divider(
+                    color: Colors.lightBlueAccent,
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
                         'Начало матча',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 14),
                       ),
                       Text(
                         '${CustomStyles.defaultDateTimeFormat.format(matchDateTime)}',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ],
                   )
