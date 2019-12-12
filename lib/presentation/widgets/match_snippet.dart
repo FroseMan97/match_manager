@@ -10,11 +10,13 @@ class MatchSnippet extends StatelessWidget {
   final Function onTap;
   final String matchName;
   final DateTime matchDateTime;
+  final DateTime matchCollectionDateTime;
   final MatchStatus status;
 
   MatchSnippet(
       {@required this.matchName,
       @required this.matchDateTime,
+      @required this.matchCollectionDateTime,
       @required this.photo,
       @required this.status,
       @required this.onTap});
@@ -29,7 +31,7 @@ class MatchSnippet extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-              height: 200,
+              height: 220,
               child: Container(
                 child: _buildImage(photo),
               ),
@@ -57,28 +59,19 @@ class MatchSnippet extends StatelessWidget {
                       )
                     ],
                   ),
-                  SizedBox(
-                    height: 8,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Divider(
+                      color: Colors.lightBlueAccent,
+                    ),
                   ),
-                  Divider(
-                    color: Colors.lightBlueAccent,
+                  _buildInfoRow(
+                    'Начало матча',
+                    CustomStyles.defaultDateTimeFormat.format(matchDateTime),
                   ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        'Начало матча',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      Text(
-                        '${CustomStyles.defaultDateTimeFormat.format(matchDateTime)}',
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ],
+                  _buildInfoRow(
+                    'Сбор',
+                    CustomStyles.defaultDateTimeFormat.format(matchCollectionDateTime),
                   )
                 ],
               ),
@@ -86,6 +79,26 @@ class MatchSnippet extends StatelessWidget {
           ],
         ),
         elevation: 4,
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String name, String data) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            name,
+            style: TextStyle(fontSize: 16),
+          ),
+          Text(
+            '$data',
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
       ),
     );
   }

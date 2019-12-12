@@ -94,14 +94,14 @@ class _MatchScreenState extends State<MatchScreen> {
     );
     final button2 = RaisedButton(
       splashColor: Colors.lightBlueAccent,
-      color: Colors.red[500],
+      color: Colors.orange,
       textColor: Colors.white,
       onPressed: onPressed,
       child: Text('Отозвать заявку'),
     );
     return Container(
-      width: MediaQuery.of(context).size.width - 20,
-      height: 50,
+        width: MediaQuery.of(context).size.width - 20,
+        height: 50,
         child: flag ? button1 : button2);
   }
 

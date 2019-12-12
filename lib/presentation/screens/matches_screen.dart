@@ -130,6 +130,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
             matchName: match?.matchName,
             matchDateTime: match?.matchDateTime,
             photo: match?.matchPhoto,
+            matchCollectionDateTime: match?.matchColletionDateTime,
             onTap: () => Navigator.push(
               context,
               CupertinoPageRoute(
