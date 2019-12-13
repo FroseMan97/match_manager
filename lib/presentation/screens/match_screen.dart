@@ -77,6 +77,7 @@ class MatchScreen extends StatelessWidget {
       backgroundColor: CustomStyles.appBarColor,
       title: Text('Подробно о матче'),
       pinned: true,
+      forceElevated: true,
     );
   }
 

@@ -34,6 +34,8 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
   @override
   Stream<MatchState> mapEventToState(MatchEvent event) async* {
     if (event is LoadMatchEvent) {
+      yield LoadingMatchState();
+      await Future.delayed(Duration(seconds: 1));
       final match = await matchesRepository.getMatch(matchID);
       var requests, workers;
       if (match?.requests != null) {

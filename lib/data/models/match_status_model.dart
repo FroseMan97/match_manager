@@ -26,7 +26,7 @@ class MatchStatusHelper {
   }
 
   static bool getWorkersVisible(MatchStatus status) {
-    if(status == MatchStatus.work) {
+    if(status == MatchStatus.work || status == MatchStatus.end) {
       return true;
     }
     return false;
