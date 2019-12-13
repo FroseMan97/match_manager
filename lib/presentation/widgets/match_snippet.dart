@@ -107,8 +107,6 @@ class MatchSnippet extends StatelessWidget {
     return Container(
         child: CustomImage(
       photo,
-      color: Colors.grey[300],
-      blendMode: BlendMode.darken,
     ));
   }
 }
