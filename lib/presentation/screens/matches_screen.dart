@@ -42,39 +42,41 @@ class _MatchesScreenState extends State<MatchesScreen> {
     return Scaffold(
       floatingActionButton: _buildFloatingActionButton(),
       drawer: widget.drawer,
-      body: CustomScrollView(
-        physics: RefreshScrollPhysics(),
-        slivers: <Widget>[
-          _buildAppbar(title),
-          CupertinoSliverRefreshControl(
-            refreshIndicatorExtent: 80,
-            onRefresh: () async {
-              await Future.delayed(Duration(seconds: 1));
-              matchesBloc.add(LoadMatchesEvent());
-            },
-          ),
-          BlocBuilder<MatchesBloc, MatchesState>(
-            bloc: matchesBloc,
-            builder: (context, state) {
-              if (state is LoadingMatchesState) {
-                return _buildLoadingWidget();
-              }
-              if (state is EmptyMatchesState) {
-                return _buildEmptyMatches();
-              }
-              if (state is ErrorMatchesState) {
-                return _buildErrorWidget(
-                  state.errorMessage,
-                );
-              }
-              if (state is LoadedMatchesState) {
-                return _buildMatchesList(
-                  state.matchesList,
-                );
-              }
-            },
-          )
-        ],
+      body: Scrollbar(
+        child: CustomScrollView(
+          physics: RefreshScrollPhysics(),
+          slivers: <Widget>[
+            _buildAppbar(title),
+            CupertinoSliverRefreshControl(
+              refreshIndicatorExtent: 80,
+              onRefresh: () async {
+                await Future.delayed(Duration(seconds: 1));
+                matchesBloc.add(LoadMatchesEvent());
+              },
+            ),
+            BlocBuilder<MatchesBloc, MatchesState>(
+              bloc: matchesBloc,
+              builder: (context, state) {
+                if (state is LoadingMatchesState) {
+                  return _buildLoadingWidget();
+                }
+                if (state is EmptyMatchesState) {
+                  return _buildEmptyMatches();
+                }
+                if (state is ErrorMatchesState) {
+                  return _buildErrorWidget(
+                    state.errorMessage,
+                  );
+                }
+                if (state is LoadedMatchesState) {
+                  return _buildMatchesList(
+                    state.matchesList,
+                  );
+                }
+              },
+            )
+          ],
+        ),
       ),
     );
   }
@@ -138,7 +140,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                   final matchesDatasource = MatchesLocalDatasource();
                   final usersDatasource = UsersLocalDatasourceImpl();
                   return MatchScreen(
-                    matchBloc: MatchBloc(
+                    MatchBloc(
                       matchesRepository: MatchesRepositoryImpl(
                         matchesDatasource,
                       ),

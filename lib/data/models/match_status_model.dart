@@ -1,14 +1,8 @@
-enum MatchStatus {
-  anons,
-  requestOpen,
-  requestClose,
-  work,
-  end
-}
+enum MatchStatus { anons, requestOpen, requestClose, work, end }
 
 class MatchStatusHelper {
   static String getStatusString(MatchStatus status) {
-    switch(status){
+    switch (status) {
       case MatchStatus.anons:
         return 'Анонсирован';
       case MatchStatus.requestOpen:
@@ -22,5 +16,19 @@ class MatchStatusHelper {
       default:
         return 'Не определенный';
     }
+  }
+
+  static bool getRequestsVisible(MatchStatus status) {
+    if(status == MatchStatus.anons) {
+      return false;
+    }
+    return true;
+  }
+
+  static bool getWorkersVisible(MatchStatus status) {
+    if(status == MatchStatus.work) {
+      return true;
+    }
+    return false;
   }
 }

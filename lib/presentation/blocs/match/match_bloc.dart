@@ -1,3 +1,4 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:match_manager/data/models/match_model.dart';
 import 'package:match_manager/data/models/user_model.dart';
@@ -6,7 +7,10 @@ import 'package:match_manager/domain/repositories/users_repository.dart';
 import 'package:match_manager/presentation/blocs/base/base_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
-class MatchBloc implements BaseBloc {
+import 'match_event.dart';
+import 'match_state.dart';
+
+class MatchBloc extends Bloc<MatchEvent, MatchState> {
   final String matchID;
   final MatchesRepository matchesRepository;
   final UsersRepository usersRepository;
@@ -15,41 +19,30 @@ class MatchBloc implements BaseBloc {
       {@required this.matchID,
       @required this.matchesRepository,
       @required this.usersRepository}) {
-    loadMatch();
-  }
-
-  final _matchSubject = BehaviorSubject<MatchModel>();
-  Stream<MatchModel> get getMatch => _matchSubject.stream;
-
-  final _requestsUsersSubject = BehaviorSubject<List<UserModel>>();
-  Stream<List<UserModel>> get getRequestsUser => _requestsUsersSubject.stream;
-
-  final _workersUsersSubject = BehaviorSubject<List<UserModel>>();
-  Stream<List<UserModel>> get getWorkersUsers => _workersUsersSubject.stream;
-
-  loadMatch() async {
-    await matchesRepository.getMatch(matchID).then((MatchModel match) async {
-      _matchSubject.add(match);
-      if (match?.requests != null) {
-        final requests = await _loadUsers(match.requests);
-        _requestsUsersSubject.add(requests);
-      }
-      if(match?.workers != null) {
-        final workers = await _loadUsers(match.workers);
-        _workersUsersSubject.add(workers);
-      }
-    });
+    add(LoadMatchEvent());
   }
 
   _loadUsers(List<String> users) async {
-    final requestsUsers = await Future.wait(users.map((userID) => usersRepository.getUser(userID)));
+    final requestsUsers = await Future.wait(
+        users.map((userID) => usersRepository.getUser(userID)));
     return requestsUsers;
   }
 
   @override
-  void dispose() {
-    _matchSubject.close();
-    _requestsUsersSubject.close();
-    _workersUsersSubject.close();
+  get initialState => LoadingMatchState();
+
+  @override
+  Stream<MatchState> mapEventToState(MatchEvent event) async* {
+    if (event is LoadMatchEvent) {
+      final match = await matchesRepository.getMatch(matchID);
+      var requests, workers;
+      if (match?.requests != null) {
+         requests = await _loadUsers(match.requests);
+      }
+      if (match?.workers != null) {
+         workers = await _loadUsers(match.workers);
+      }
+      yield LoadedMatchState(match, requests, workers);
+    }
   }
 }
