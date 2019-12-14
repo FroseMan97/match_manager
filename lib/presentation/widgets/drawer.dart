@@ -3,16 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:match_manager/presentation/blocs/theme/theme_bloc.dart';
 import 'package:match_manager/presentation/blocs/theme/theme_event.dart';
+import 'package:match_manager/presentation/screens/matches_screen.dart';
+import 'package:match_manager/presentation/screens/news_screen.dart';
 import 'package:match_manager/presentation/theme/custom_theme.dart';
 
 import 'user_account_drawer_header.dart';
 
-class DrawerWidget extends StatefulWidget {
-  @override
-  _DrawerWidgetState createState() => _DrawerWidgetState();
-}
-
-class _DrawerWidgetState extends State<DrawerWidget> {
+class DrawerWidget extends StatelessWidget{
+  final bool news;
+  final bool matches;
+  final bool tasks;
+  final bool queue;
+  
+  DrawerWidget({
+    this.news = false,
+    this.matches = false,
+    this.tasks = false,
+    this.queue = false,
+  });
   @override
   Widget build(BuildContext context) {
     final userName = 'Sergey Lazarev';
@@ -31,14 +39,26 @@ class _DrawerWidgetState extends State<DrawerWidget> {
               avatar: avatar,
             ),
             ListTile(
-              onTap: () => Navigator.pop(context),
+              selected: news,
+              onTap: () => Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => NewsScreen(),
+                ),
+              ),
               leading: Icon(Icons.new_releases),
               title: Text(
                 'Новости',
               ),
             ),
             ListTile(
-              onTap: () => Navigator.pop(context),
+              selected: matches,
+              onTap: () => Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => MatchesScreen(),
+                ),
+              ),
               leading: Icon(Icons.list),
               title: Text(
                 'Матчи',
@@ -58,7 +78,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                 'Очередь',
               ),
             ),
-            _buildThemeTile(),
+            _buildThemeTile(context),
             _buildExitTile(),
           ],
         ),
@@ -79,7 +99,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     );
   }
 
-  _buildThemeTile() {
+  _buildThemeTile(BuildContext context) {
     return Expanded(
       child: Container(
         alignment: Alignment.bottomCenter,
@@ -88,13 +108,13 @@ class _DrawerWidgetState extends State<DrawerWidget> {
           title: Text(
             'Темная тема',
           ),
-          trailing: _buildSwitch(),
+          trailing: _buildSwitch(context),
         ),
       ),
     );
   }
 
-  _buildSwitch() {
+  _buildSwitch(BuildContext context) {
     final themeBloc = BlocProvider.of<ThemeBloc>(context);
     return BlocBuilder<ThemeBloc, ThemeData>(
       bloc: themeBloc,

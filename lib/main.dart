@@ -6,6 +6,7 @@ import 'package:match_manager/data/repositories/matches_repository_impl.dart';
 import 'package:match_manager/domain/repositories/matches_repository.dart';
 import 'package:match_manager/presentation/blocs/matches/matches_bloc.dart';
 import 'package:match_manager/presentation/blocs/theme/theme_bloc.dart';
+import 'package:match_manager/presentation/screens/news_screen.dart';
 import 'presentation/screens/matches_screen.dart';
 import 'presentation/widgets/drawer.dart';
 
@@ -14,15 +15,12 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  final drawer = DrawerWidget();
   @override
   Widget build(BuildContext context) {
     final MatchesLocalDatasource matchesLocalDatasource =
         MatchesLocalDatasource();
     final MatchesRepository matchesRepository =
         MatchesRepositoryImpl(matchesLocalDatasource);
-    final MatchesBloc matchesBloc =
-        MatchesBloc(matchesRepository: matchesRepository);
     final themeBloc = ThemeBloc();
 
     return BlocProvider<ThemeBloc>(
@@ -35,12 +33,7 @@ class MyApp extends StatelessWidget {
             home: Container(
               child: SafeArea(
                 top: true,
-                child: BlocProvider<MatchesBloc>(
-                  create: (context) => matchesBloc,
-                  child: MatchesScreen(
-                    drawer: drawer,
-                  ),
-                ),
+                child: NewsScreen()
               ),
             ),
           );
