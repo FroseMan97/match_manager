@@ -27,6 +27,8 @@ dependencies:
   cached_network_image: ^2.0.0-rc
   intl: ^0.16.0
   firebase_core: any
+  cloud_firestore: any
+  firebase_auth: any
 
 dev_dependencies:
   flutter_test:
