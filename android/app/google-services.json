@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1075298442415",
+    "firebase_url": "https://match-manager-1387c.firebaseio.com",
+    "project_id": "match-manager-1387c",
+    "storage_bucket": "match-manager-1387c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1075298442415:android:0081cad8adb7eb3bd8885a",
+        "android_client_info": {
+          "package_name": "com.sergeylazarev.match_manager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1075298442415-hca7lu5i81n26t64379pt828q27tid84.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALuIuswQ0MTRtup4AraDHvBENQWmhRxlk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1075298442415-hca7lu5i81n26t64379pt828q27tid84.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
