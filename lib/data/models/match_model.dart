@@ -35,8 +35,8 @@ class MatchModel {
       matchDateTime: DateTime.tryParse(json['matchDateTime'] ?? '')?.toLocal(),
       matchColletionDateTime: DateTime.tryParse(json['matchCollectionDateTime'] ?? '')?.toLocal(),
       matchPhoto: json['matchPhoto'],
-      requests: json['requests'].cast<String>(),
-      workers: json['workers'].cast<String>(),
+      requests: json['requests'] != null ? json['requests'].cast<String>() : null,
+      workers: json['workers'] != null ? json['workers'].cast<String>() : null,
       matchStatus: MatchStatus.values[json['matchStatus'] ?? 0]
     );
   }

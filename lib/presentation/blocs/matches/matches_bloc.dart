@@ -20,7 +20,7 @@ class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
     if (event is LoadMatchesEvent) {
       yield LoadingMatchesState();
       await Future.delayed(Duration(seconds: 2));
-      try {
+      
         final List<MatchModel> results =
             await matchesRepository.getMatches().timeout(
                   Duration(seconds: 5),
@@ -31,11 +31,7 @@ class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
         yield LoadedMatchesState(
           matchesList: results,
         );
-      } catch (error) {
-        yield ErrorMatchesState(
-          '$error',
-        );
-      }
+      
     }
   }
 }

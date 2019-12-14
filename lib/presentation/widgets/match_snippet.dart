@@ -12,6 +12,7 @@ class MatchSnippet extends StatelessWidget {
   final DateTime matchCollectionDateTime;
   final MatchStatus status;
   final String matchID;
+  final String matchDescription;
 
   MatchSnippet(
       {this.matchName,
@@ -20,6 +21,7 @@ class MatchSnippet extends StatelessWidget {
       this.photo,
       this.status,
       this.matchID,
+      this.matchDescription,
       this.onTap});
 
   @override
@@ -33,11 +35,8 @@ class MatchSnippet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Hero(
-                tag: '$photo + $matchID',
-                child: Container(
-                  child: _buildImage(photo),
-                ),
+              Container(
+                child: _buildImage(photo),
               ),
               Container(
                 padding: EdgeInsets.all(16),
@@ -51,7 +50,7 @@ class MatchSnippet extends StatelessWidget {
                           child: Container(
                             padding: EdgeInsets.only(right: 8),
                             child: Text(
-                              matchName.toUpperCase(),
+                              matchName?.toUpperCase() ?? 'БЕЗ НАЗВАНИЯ',
                               overflow: TextOverflow.visible,
                               style:
                                   TextStyle(fontSize: 18, letterSpacing: 0.25),
@@ -63,6 +62,15 @@ class MatchSnippet extends StatelessWidget {
                         )
                       ],
                     ),
+                    matchDescription != null
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 12.0),
+                            child: SelectableText(
+                              matchDescription,
+                              maxLines: 2,
+                            ),
+                          )
+                        : SizedBox.shrink(),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Divider(),
@@ -99,11 +107,11 @@ class MatchSnippet extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
+          SelectableText(
             name,
             style: TextStyle(fontSize: 16),
           ),
-          Text(
+          SelectableText(
             '$data',
             style: TextStyle(fontSize: 16),
           ),
@@ -114,7 +122,7 @@ class MatchSnippet extends StatelessWidget {
 
   _buildImage(String photo) {
     return AspectRatio(
-      aspectRatio: 8/3, 
+      aspectRatio: 8 / 4,
       child: SizedBox.expand(
         child: CustomImage(
           '$photo',

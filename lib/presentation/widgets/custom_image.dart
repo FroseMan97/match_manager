@@ -12,7 +12,7 @@ class CustomImage extends CachedNetworkImage {
   CustomImage(this.photo,
       {this.height, this.builder, this.blendMode, this.color})
       : super(
-          imageUrl: photo,
+          imageUrl: '$photo',
           imageBuilder: builder,
           height: height,
           colorBlendMode: blendMode,

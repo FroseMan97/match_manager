@@ -125,6 +125,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
         (context, i) {
           final match = matchesList[i];
           return MatchSnippet(
+            matchDescription: match.matchDescription,
             matchID: match.matchID,
             status: match.matchStatus,
             matchName: match?.matchName,
