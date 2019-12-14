@@ -13,15 +13,13 @@ import 'package:match_manager/presentation/blocs/matches/matches_state.dart';
 import 'package:match_manager/presentation/widgets/match_snippet.dart';
 import 'package:match_manager/utils/refresh_physics.dart';
 
-import '../../styles.dart';
 import 'add_match_screen.dart';
 import 'match_screen.dart';
 
 class MatchesScreen extends StatefulWidget {
   final Widget drawer;
-  final MatchesBloc matchesBloc;
 
-  MatchesScreen({@required this.drawer, @required this.matchesBloc});
+  MatchesScreen({@required this.drawer});
 
   @override
   _MatchesScreenState createState() => _MatchesScreenState();
@@ -32,7 +30,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
 
   @override
   void initState() {
-    matchesBloc = widget.matchesBloc;
+    matchesBloc = BlocProvider.of<MatchesBloc>(context);
     super.initState();
   }
 
@@ -83,7 +81,6 @@ class _MatchesScreenState extends State<MatchesScreen> {
 
   _buildFloatingActionButton() {
     return FloatingActionButton(
-      backgroundColor: Colors.lightBlueAccent,
       onPressed: () async => await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => AddMatchScreen()),
@@ -96,7 +93,6 @@ class _MatchesScreenState extends State<MatchesScreen> {
 
   _buildAppbar(String title) {
     return SliverAppBar(
-      backgroundColor: CustomStyles.appBarColor,
       title: Text(title),
       floating: true,
     );
@@ -128,6 +124,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
         (context, i) {
           final match = matchesList[i];
           return MatchSnippet(
+            matchID: match.matchID,
             status: match.matchStatus,
             matchName: match?.matchName,
             matchDateTime: match?.matchDateTime,
@@ -139,16 +136,18 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 builder: (context) {
                   final matchesDatasource = MatchesLocalDatasource();
                   final usersDatasource = UsersLocalDatasourceImpl();
-                  return MatchScreen(
-                    MatchBloc(
-                      matchesRepository: MatchesRepositoryImpl(
-                        matchesDatasource,
-                      ),
-                      usersRepository: UsersRepositoryImpl(
-                        usersDatasource,
-                      ),
-                      matchID: match.matchID,
+                  final matchBloc = MatchBloc(
+                    matchesRepository: MatchesRepositoryImpl(
+                      matchesDatasource,
                     ),
+                    usersRepository: UsersRepositoryImpl(
+                      usersDatasource,
+                    ),
+                    matchID: match.matchID,
+                  );
+                  return BlocProvider<MatchBloc>(
+                    create: (context) => matchBloc,
+                    child: MatchScreen(),
                   );
                 },
               ),

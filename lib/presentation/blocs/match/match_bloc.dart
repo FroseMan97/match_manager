@@ -4,7 +4,6 @@ import 'package:match_manager/data/models/match_model.dart';
 import 'package:match_manager/data/models/user_model.dart';
 import 'package:match_manager/domain/repositories/matches_repository.dart';
 import 'package:match_manager/domain/repositories/users_repository.dart';
-import 'package:match_manager/presentation/blocs/base/base_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'match_event.dart';
@@ -35,7 +34,6 @@ class MatchBloc extends Bloc<MatchEvent, MatchState> {
   Stream<MatchState> mapEventToState(MatchEvent event) async* {
     if (event is LoadMatchEvent) {
       yield LoadingMatchState();
-      await Future.delayed(Duration(seconds: 1));
       final match = await matchesRepository.getMatch(matchID);
       var requests, workers;
       if (match?.requests != null) {

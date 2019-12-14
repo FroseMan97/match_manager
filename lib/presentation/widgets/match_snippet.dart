@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:match_manager/data/models/match_status_model.dart';
 import 'package:match_manager/presentation/widgets/badge.dart';
 import 'package:match_manager/presentation/widgets/custom_image.dart';
+import 'package:match_manager/utils/formatter.dart';
 
-import '../../styles.dart';
+
 
 class MatchSnippet extends StatelessWidget {
   final String photo;
@@ -12,6 +13,7 @@ class MatchSnippet extends StatelessWidget {
   final DateTime matchDateTime;
   final DateTime matchCollectionDateTime;
   final MatchStatus status;
+  final String matchID;
 
   MatchSnippet(
       {@required this.matchName,
@@ -19,6 +21,7 @@ class MatchSnippet extends StatelessWidget {
       @required this.matchCollectionDateTime,
       @required this.photo,
       @required this.status,
+      @required this.matchID,
       @required this.onTap});
 
   @override
@@ -30,10 +33,13 @@ class MatchSnippet extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              height: 220,
+            Hero(
+              tag: photo + matchID,
               child: Container(
-                child: _buildImage(photo),
+                height: 220,
+                child: Container(
+                  child: _buildImage(photo),
+                ),
               ),
             ),
             Container(
@@ -67,11 +73,11 @@ class MatchSnippet extends StatelessWidget {
                   ),
                   _buildInfoRow(
                     'Начало матча',
-                    CustomStyles.defaultDateTimeFormat.format(matchDateTime),
+                    Formatter.defaultDateTimeFormat.format(matchDateTime),
                   ),
                   _buildInfoRow(
                     'Сбор',
-                    CustomStyles.defaultDateTimeFormat.format(matchCollectionDateTime),
+                    Formatter.defaultDateTimeFormat.format(matchCollectionDateTime),
                   )
                 ],
               ),

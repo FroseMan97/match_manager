@@ -11,17 +11,15 @@ import 'package:match_manager/presentation/blocs/match/match_state.dart';
 import 'package:match_manager/presentation/blocs/matches/matches_state.dart';
 import 'package:match_manager/presentation/widgets/badge.dart';
 import 'package:match_manager/presentation/widgets/custom_image.dart';
+import 'package:match_manager/utils/formatter.dart';
 import 'package:match_manager/utils/refresh_physics.dart';
 
-import '../../styles.dart';
-
 class MatchScreen extends StatelessWidget {
-  final MatchBloc matchBloc;
-
-  MatchScreen(this.matchBloc);
+  MatchBloc matchBloc;
 
   @override
   Widget build(BuildContext context) {
+    matchBloc = BlocProvider.of<MatchBloc>(context);
     return Scaffold(
       body: Scrollbar(
         child: CustomScrollView(
@@ -29,11 +27,12 @@ class MatchScreen extends StatelessWidget {
           slivers: <Widget>[
             _buildAppbar(),
             _buildRefreshIndicator(),
-            BlocBuilder(
+            BlocBuilder<MatchBloc, MatchState>(
               bloc: matchBloc,
               builder: (context, state) {
                 if (state is LoadedMatchState) {
                   final match = state?.matchModel;
+                  final matchID = match?.matchID;
                   final requests = state?.requests;
                   final matchName = match?.matchName;
                   final matchPhoto = match?.matchPhoto;
@@ -43,6 +42,7 @@ class MatchScreen extends StatelessWidget {
                   final matchStatus = match?.matchStatus;
                   final workers = state?.workers;
                   return _buildBody(
+                    matchID: matchID,
                     matchName: matchName,
                     matchPhoto: matchPhoto,
                     matchDateTime: matchDateTime,
@@ -74,7 +74,6 @@ class MatchScreen extends StatelessWidget {
 
   _buildAppbar() {
     return SliverAppBar(
-      backgroundColor: CustomStyles.appBarColor,
       title: Text('Подробно о матче'),
       pinned: true,
       forceElevated: true,
@@ -83,7 +82,9 @@ class MatchScreen extends StatelessWidget {
 
   _buildLoading() {
     return SliverFillRemaining(
-      child: Center(child: CircularProgressIndicator()),
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 
@@ -95,14 +96,18 @@ class MatchScreen extends StatelessWidget {
       @required String matchDescription,
       @required List<UserModel> requests,
       @required List<UserModel> workers,
+      @required String matchID,
       @required MatchStatus matchStatus}) {
     final expansionTileStyle = TextStyle(fontSize: 16);
     return SliverList(
       delegate: SliverChildListDelegate(
         [
-          CustomImage(
-            matchPhoto,
-            height: 250,
+          Hero(
+            tag: matchPhoto + matchID,
+            child: CustomImage(
+              matchPhoto,
+              height: 250,
+            ),
           ),
           SizedBox(
             height: 4,
@@ -134,14 +139,14 @@ class MatchScreen extends StatelessWidget {
                     ListTile(
                       title: Text('Начало'),
                       trailing: Text(
-                        '${CustomStyles.defaultDateTimeFormat.format(matchDateTime)}',
+                        '${Formatter.defaultDateTimeFormat.format(matchDateTime)}',
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
                     ListTile(
                       title: Text('Сбор'),
                       trailing: Text(
-                        '${CustomStyles.defaultDateTimeFormat.format(matchCollectionDateTime)}',
+                        '${Formatter.defaultDateTimeFormat.format(matchCollectionDateTime)}',
                         style: TextStyle(fontSize: 16),
                       ),
                     ),
@@ -180,9 +185,7 @@ class MatchScreen extends StatelessWidget {
                   CircleAvatar(
                     child: Text(
                       '${requests?.length ?? '0'}',
-                      style: CustomStyles.drawerPersonName,
                     ),
-                    backgroundColor: Colors.lightBlueAccent,
                   )
                 ],
               ),

@@ -18,6 +18,6 @@ class CustomImage extends CachedNetworkImage {
           color: color,
           fit: BoxFit.fill,
           errorWidget: (context, url, error) =>
-              Image.asset(ERROR_IMAGE_ASSET_STRING),
+              Image.asset(ERROR_IMAGE_ASSET_STRING, height: height,),
         );
 }
