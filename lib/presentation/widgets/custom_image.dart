@@ -9,7 +9,8 @@ class CustomImage extends CachedNetworkImage {
   final BlendMode blendMode;
   final Color color;
   final Widget Function(BuildContext, ImageProvider<dynamic>) builder;
-  CustomImage(this.photo, {this.height = 200, this.builder, this.blendMode, this.color})
+  CustomImage(this.photo,
+      {this.height, this.builder, this.blendMode, this.color})
       : super(
           imageUrl: photo,
           imageBuilder: builder,
@@ -17,7 +18,10 @@ class CustomImage extends CachedNetworkImage {
           colorBlendMode: blendMode,
           color: color,
           fit: BoxFit.fill,
-          errorWidget: (context, url, error) =>
-              Image.asset(ERROR_IMAGE_ASSET_STRING),
+          errorWidget: (context, url, error) => Image.asset(
+            ERROR_IMAGE_ASSET_STRING,
+            height: height,
+            fit: BoxFit.fill,
+          ),
         );
 }

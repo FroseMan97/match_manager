@@ -14,14 +14,14 @@ class MatchModel {
 
   MatchModel({
     @required this.matchID,
-    @required this.matchName,
-    @required this.matchDescription,
-    @required this.matchDateTime,
-    @required this.matchPhoto,
-    @required this.requests,
-    @required this.workers,
-    @required this.matchColletionDateTime,
-    @required this.matchStatus
+    this.matchName,
+    this.matchDescription,
+    this.matchDateTime,
+    this.matchPhoto,
+    this.requests,
+    this.workers,
+    this.matchColletionDateTime,
+    this.matchStatus
   });
 
   factory MatchModel.fromJson(Map<String, dynamic> json) {

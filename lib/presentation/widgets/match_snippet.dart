@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:match_manager/data/models/match_status_model.dart';
 import 'package:match_manager/presentation/widgets/badge.dart';
 import 'package:match_manager/presentation/widgets/custom_image.dart';
-
-import '../../styles.dart';
+import 'package:match_manager/utils/formatter.dart';
 
 class MatchSnippet extends StatelessWidget {
   final String photo;
@@ -12,73 +11,83 @@ class MatchSnippet extends StatelessWidget {
   final DateTime matchDateTime;
   final DateTime matchCollectionDateTime;
   final MatchStatus status;
+  final String matchID;
 
   MatchSnippet(
-      {@required this.matchName,
-      @required this.matchDateTime,
-      @required this.matchCollectionDateTime,
-      @required this.photo,
-      @required this.status,
-      @required this.onTap});
+      {this.matchName,
+      this.matchDateTime,
+      this.matchCollectionDateTime,
+      this.photo,
+      this.status,
+      this.matchID,
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: onTap,
-      title: Card(
-        clipBehavior: Clip.hardEdge,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              height: 220,
-              child: Container(
-                child: _buildImage(photo),
+      dense: true,
+      title: InkWell(
+        onTap: onTap,
+        child: Card(
+          clipBehavior: Clip.hardEdge,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Hero(
+                tag: '$photo + $matchID',
+                child: Container(
+                  child: _buildImage(photo),
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.only(right: 8),
-                          child: Text(
-                            matchName,
-                            overflow: TextOverflow.visible,
-                            style: TextStyle(fontSize: 18, letterSpacing: 0.25),
+              Container(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Text(
+                              matchName.toUpperCase(),
+                              overflow: TextOverflow.visible,
+                              style:
+                                  TextStyle(fontSize: 18, letterSpacing: 0.25),
+                            ),
                           ),
                         ),
-                      ),
-                      BadgeWidget(
-                        matchStatus: status,
-                      )
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Divider(
-                      color: Colors.lightBlueAccent,
+                        BadgeWidget(
+                          matchStatus: status,
+                        )
+                      ],
                     ),
-                  ),
-                  _buildInfoRow(
-                    'Начало матча',
-                    CustomStyles.defaultDateTimeFormat.format(matchDateTime),
-                  ),
-                  _buildInfoRow(
-                    'Сбор',
-                    CustomStyles.defaultDateTimeFormat.format(matchCollectionDateTime),
-                  )
-                ],
-              ),
-            )
-          ],
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Divider(),
+                    ),
+                    _buildInfoRow(
+                      'Начало матча',
+                      matchDateTime != null
+                          ? Formatter.defaultDateTimeFormat
+                              .format(matchDateTime)
+                          : 'пока неизвестно',
+                    ),
+                    _buildInfoRow(
+                      'Сбор',
+                      matchCollectionDateTime != null
+                          ? Formatter.defaultDateTimeFormat
+                              .format(matchCollectionDateTime)
+                          : 'пока неизвестно',
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+          elevation: 4,
         ),
-        elevation: 4,
       ),
     );
   }
@@ -104,9 +113,13 @@ class MatchSnippet extends StatelessWidget {
   }
 
   _buildImage(String photo) {
-    return Container(
+    return AspectRatio(
+      aspectRatio: 8/3, 
+      child: SizedBox.expand(
         child: CustomImage(
-      photo,
-    ));
+          '$photo',
+        ),
+      ),
+    );
   }
 }
