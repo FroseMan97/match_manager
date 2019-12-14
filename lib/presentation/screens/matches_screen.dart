@@ -80,13 +80,14 @@ class _MatchesScreenState extends State<MatchesScreen> {
   }
 
   _buildFloatingActionButton() {
-    return FloatingActionButton(
+    return FloatingActionButton.extended(
       onPressed: () async => await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => AddMatchScreen()),
       ),
-      child: Icon(
-        Icons.add,
+      icon: Icon(Icons.add),
+      label: Text(
+        'Добавить матч',
       ),
     );
   }
