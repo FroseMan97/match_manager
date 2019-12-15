@@ -15,11 +15,26 @@ class MatchesFirestoreDatasourceImpl implements MatchesDatasource {
 
   @override
   Future<MatchModel> getMatch(String matchID) async {
-    final document = await _firestore
+    final result = await _firestore
         .collection(_matchCollectionName)
         .document(matchID)
         .get();
-    return MatchModel.fromJson(document.data);
+    final json = result.data;
+    return MatchModel(
+        matchID: result.documentID,
+        matchName: json['matchName'],
+        matchDescription: json['matchDescription'],
+        matchDateTime:
+            DateTime.tryParse('${json['matchDateTime']}' ?? '')?.toLocal(),
+        matchColletionDateTime:
+            DateTime.tryParse('${json['matchCollectionDateTime']}' ?? '')
+                ?.toLocal(),
+        matchPhoto: json['matchPhoto'],
+        requests:
+            json['requests'] != null ? json['requests'].cast<String>() : null,
+        workers:
+            json['workers'] != null ? json['workers'].cast<String>() : null,
+        matchStatus: MatchStatus.values[json['matchStatus'] ?? 0]);
   }
 
   @override
