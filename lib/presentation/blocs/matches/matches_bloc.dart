@@ -19,19 +19,20 @@ class MatchesBloc extends Bloc<MatchesEvent, MatchesState> {
   Stream<MatchesState> mapEventToState(MatchesEvent event) async* {
     if (event is LoadMatchesEvent) {
       yield LoadingMatchesState();
-      await Future.delayed(Duration(seconds: 2));
-      
-        final List<MatchModel> results =
-            await matchesRepository.getMatches().timeout(
-                  Duration(seconds: 5),
-                );
-        if (results == null || results.isEmpty) {
-          yield EmptyMatchesState();
-        }
-        yield LoadedMatchesState(
-          matchesList: results,
+
+      try{
+        final List<MatchModel> results = await matchesRepository.getMatches();
+      if (results == null || results.isEmpty) {
+        yield EmptyMatchesState();
+      }
+      yield LoadedMatchesState(
+        matchesList: results,
+      );
+      }catch(error){
+        yield ErrorMatchesState(
+          error.toString()
         );
-      
+      }
     }
   }
 }

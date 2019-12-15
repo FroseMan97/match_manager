@@ -54,7 +54,13 @@ class MatchScreen extends StatelessWidget {
                     requests: requests,
                   );
                 }
-                return _buildLoading();
+                if(state is EmptyMatchState){
+                  return _buildEmptyMatch();
+                }
+                if(state is LoadingMatchState) {
+                  return  _buildLoading();
+                }
+                return SliverFillRemaining();
               },
             )
           ],
@@ -78,6 +84,14 @@ class MatchScreen extends StatelessWidget {
       title: Text('Подробно о матче'),
       pinned: true,
       forceElevated: true,
+    );
+  }
+
+  _buildEmptyMatch() {
+    return SliverFillRemaining(
+      child: Center(
+        child: Text('Матч не найден'),
+      ),
     );
   }
 

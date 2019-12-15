@@ -26,14 +26,14 @@ class MatchModel {
 
   factory MatchModel.fromJson(Map<String, dynamic> json) {
     if(json == null) {
-      throw Exception('Бред - Матч не будет null');
+      return null;
     }
     return MatchModel(
       matchID: json['matchID'],
       matchName: json['matchName'],
       matchDescription: json['matchDescription'],
-      matchDateTime: DateTime.tryParse(json['matchDateTime'] ?? '')?.toLocal(),
-      matchColletionDateTime: DateTime.tryParse(json['matchCollectionDateTime'] ?? '')?.toLocal(),
+      matchDateTime: DateTime.tryParse('${json['matchDateTime']}' ?? '')?.toLocal(),
+      matchColletionDateTime: DateTime.tryParse('${json['matchCollectionDateTime']}' ?? '')?.toLocal(),
       matchPhoto: json['matchPhoto'],
       requests: json['requests'] != null ? json['requests'].cast<String>() : null,
       workers: json['workers'] != null ? json['workers'].cast<String>() : null,

@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:match_manager/data/datasources/matches_firestore_datasource_impl.dart';
 import 'package:match_manager/data/datasources/matches_local_datasource_impl.dart';
 import 'package:match_manager/data/datasources/users_local_datasource_impl.dart';
 import 'package:match_manager/data/models/match_model.dart';
 import 'package:match_manager/data/repositories/matches_repository_impl.dart';
 import 'package:match_manager/data/repositories/users_repository_impl.dart';
+import 'package:match_manager/domain/datasources/matches_datasource.dart';
+import 'package:match_manager/domain/datasources/users_datasource.dart';
 import 'package:match_manager/domain/repositories/matches_repository.dart';
+import 'package:match_manager/domain/repositories/users_repository.dart';
 import 'package:match_manager/presentation/blocs/match/match_bloc.dart';
 import 'package:match_manager/presentation/blocs/matches/matches_bloc.dart';
 import 'package:match_manager/presentation/blocs/matches/matches_event.dart';
@@ -25,12 +29,19 @@ class MatchesScreen extends StatefulWidget {
 
 class _MatchesScreenState extends State<MatchesScreen> {
   MatchesBloc matchesBloc;
+  MatchesDatasource matchesDatasource;
+  MatchesRepository matchesRepository;
+  UsersDatasource usersDatasource;
+  UsersRepository usersRepository;
 
   @override
   void initState() {
-    MatchesLocalDatasource localDatasource = MatchesLocalDatasource();
-    MatchesRepository matchesRepository =
-        MatchesRepositoryImpl(localDatasource);
+    usersDatasource = UsersLocalDatasourceImpl();
+    matchesDatasource = MatchesFirestoreDatasourceImpl();
+    usersRepository = UsersRepositoryImpl(
+      usersDatasource,
+    );
+    matchesRepository = MatchesRepositoryImpl(matchesDatasource);
     matchesBloc = MatchesBloc(matchesRepository: matchesRepository);
     super.initState();
   }
@@ -92,9 +103,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
         MaterialPageRoute(builder: (context) => AddMatchScreen()),
       ),
       icon: Icon(Icons.add),
-      label: Text(
-        'Добавить матч',
-      ),
+      label: Text('Добавить матч'),
     );
   }
 
@@ -142,12 +151,8 @@ class _MatchesScreenState extends State<MatchesScreen> {
               context,
               CupertinoPageRoute(
                 builder: (context) {
-                  final matchesDatasource = MatchesLocalDatasource();
-                  final usersDatasource = UsersLocalDatasourceImpl();
                   final matchBloc = MatchBloc(
-                    matchesRepository: MatchesRepositoryImpl(
-                      matchesDatasource,
-                    ),
+                    matchesRepository: matchesRepository,
                     usersRepository: UsersRepositoryImpl(
                       usersDatasource,
                     ),

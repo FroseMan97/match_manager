@@ -2,8 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:match_manager/data/models/match_model.dart';
+import 'package:match_manager/domain/datasources/matches_datasource.dart';
 
-class MatchesLocalDatasource {
+class MatchesLocalDatasourceImpl implements MatchesDatasource {
   Future<List<MatchModel>> getMatches() async {
     //await Future.delayed(Duration(seconds: 3));
     final jsonMap =
